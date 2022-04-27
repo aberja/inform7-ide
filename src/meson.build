@@ -1,17 +1,11 @@
-subdir('inweb')
-subdir('cBlorb')
-subdir('inform6')
 subdir('inform/licenses')
 
-install_data('ni/ni', install_dir: pkglibexecdir, install_mode: 'rwxr-xr-x')
-
-generate_resource_xml = find_program('generate-resource-xml.sh')
-generated_gresource_xml = configure_file(input: inform_tarball,
+generate_resource_xml = find_program('generate-resource-xml.py')
+generated_gresource_xml = custom_target('generated-gresource-xml',
     output: 'com.inform7.IDE.generated.gresource.xml',
-    command: [generate_resource_xml, inform_tarball, '@OUTPUT@'])
+    command: [generate_resource_xml, '@CURRENT_SOURCE_DIR@', '@OUTPUT@'])
 resources_generated = gnome.compile_resources('resources-generated',
-    generated_gresource_xml, c_name: 'i7g',
-    source_dir: meson.current_build_dir())
+    generated_gresource_xml, c_name: 'i7g')
 
 resources = gnome.compile_resources('resources',
     'com.inform7.IDE.gresource.xml', dependencies: license_html, c_name: 'i7',
